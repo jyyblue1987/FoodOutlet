@@ -149,7 +149,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         });
 
-        mLeftArrow.setOnClickListener(new View.OnClickListener() {
+        mRightArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if( m_categories.size() < 1 )

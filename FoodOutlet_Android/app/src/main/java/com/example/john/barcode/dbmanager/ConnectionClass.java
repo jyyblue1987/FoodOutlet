@@ -54,7 +54,6 @@ public class ConnectionClass {
 		Statement stmt = null;
 		try{
 			//STEP 4: Execute a query
-			System.out.println("Creating statement...");
 			stmt = conn.createStatement();
 			String sql;
 			sql = "SELECT [LoginName], [Password], [LoginRights], E.[Inactive], [CustomerID], [CustomerNo2], [CustomerGroupID], [CompanyName], [CompanyOtherName], C.[CompanyID], C.[StockID] FROM [dbo].[Employee] AS E JOIN [dbo].[Customer] AS C ON E.CustomerID=C.ID WHERE LoginName='" + username + "'";
@@ -101,7 +100,23 @@ public class ConnectionClass {
 		return loginOk;
 	}
 
+
 	public static List<JSONObject> fetchCategories()
+	{
+		return runQuery("SELECT [ID], [CategoryName], [CategoryOtherName], [CategoryLevel] FROM [dbo].[ProductCategory]");
+	}
+
+	public static List<JSONObject> fetchPacking()
+	{
+		return runQuery("SELECT [ID], [Packing] FROM [dbo].[Packing]");
+	}
+
+	public static List<JSONObject> fetchUnit()
+	{
+		return runQuery("SELECT [ID], [Unit] FROM [dbo].[Unit]");
+	}
+
+	public static List<JSONObject> runQuery(String sql)
 	{
 		List<JSONObject> list = new ArrayList<JSONObject>();
 
@@ -112,10 +127,7 @@ public class ConnectionClass {
 		Statement stmt = null;
 		try{
 			//STEP 4: Execute a query
-			System.out.println("Creating statement...");
 			stmt = conn.createStatement();
-			String sql;
-			sql = "SELECT [ID], [CategoryName], [CategoryOtherName], [CategoryLevel] FROM [dbo].[ProductCategory]";
 			ResultSet rs = stmt.executeQuery(sql);
 
 			//STEP 5: Extract data from result set
@@ -145,10 +157,12 @@ public class ConnectionClass {
 				se.printStackTrace();
 			}//end finally try
 		}//end try
-		System.out.println("Goodbye!");
 
 		return list;
 	}
+
+
+
 
 	public static List<JSONObject> getRecordData(ResultSet rs)
 	{
