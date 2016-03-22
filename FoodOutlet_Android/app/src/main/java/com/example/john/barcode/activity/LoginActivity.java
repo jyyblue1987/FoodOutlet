@@ -20,7 +20,7 @@ public class LoginActivity extends AppCompatActivity {
         mTxtLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ConnectionClass().CONN();
+                ConnectionClass.login("Admin", "");
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
                 finish();
