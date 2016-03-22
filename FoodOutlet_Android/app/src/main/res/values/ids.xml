@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="order_frag" type="id"></item>
+    <item name="layout_contain" type="id"></item>
+</resources>
