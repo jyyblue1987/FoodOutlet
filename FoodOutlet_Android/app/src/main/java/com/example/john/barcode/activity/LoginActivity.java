@@ -25,6 +25,9 @@ public class LoginActivity extends AppCompatActivity {
 
         m_editUserName = (EditText)findViewById(R.id.editText);
         m_editPassword = (EditText)findViewById(R.id.edtPwd);
+        m_editUserName.setText("Admin");
+        m_editPassword.setText("123");
+
         TextView mTxtLogin = (TextView) findViewById(R.id.txtLogin);
 
         mTxtLogin.setOnClickListener(new View.OnClickListener() {

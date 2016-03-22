@@ -3,11 +3,16 @@ package com.example.john.barcode.dbmanager;
 import android.os.StrictMode;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConnectionClass {
 	String ip = "184.68.13.210";
@@ -96,5 +101,90 @@ public class ConnectionClass {
 		return loginOk;
 	}
 
+	public static List<JSONObject> fetchCategories()
+	{
+		List<JSONObject> list = new ArrayList<JSONObject>();
+
+		Connection conn = new ConnectionClass().connect();
+		if(conn == null)
+			return list;
+
+		Statement stmt = null;
+		try{
+			//STEP 4: Execute a query
+			System.out.println("Creating statement...");
+			stmt = conn.createStatement();
+			String sql;
+			sql = "SELECT [ID], [CategoryName], [CategoryOtherName], [CategoryLevel] FROM [dbo].[ProductCategory]";
+			ResultSet rs = stmt.executeQuery(sql);
+
+			//STEP 5: Extract data from result set
+			list = getRecordData(rs);
+
+			//STEP 6: Clean-up environment
+			rs.close();
+			stmt.close();
+			conn.close();
+		}catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		}catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		}finally{
+			//finally block used to close resources
+			try{
+				if(stmt!=null)
+					stmt.close();
+			}catch(SQLException se2){
+			}// nothing we can do
+			try{
+				if(conn!=null)
+					conn.close();
+			}catch(SQLException se){
+				se.printStackTrace();
+			}//end finally try
+		}//end try
+		System.out.println("Goodbye!");
+
+		return list;
+	}
+
+	public static List<JSONObject> getRecordData(ResultSet rs)
+	{
+		List<JSONObject> list = new ArrayList<JSONObject>();
+
+		if( rs == null )
+			return list;
+
+		try{
+			ResultSetMetaData rsmd = rs.getMetaData();
+
+			int columnCount = rsmd.getColumnCount();
+
+			while( rs.next() )
+			{
+				JSONObject record = new JSONObject();
+				for(int i = 0; i < columnCount; i++ )
+				{
+					try{
+						String name = rsmd.getColumnName(i + 1);
+						String value = rs.getString(i + 1);
+						record.put(name, value);
+					}catch(Exception e){
+
+					}
+				}
+				list.add(record);
+			}
+		}catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		}catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		}
+		return list;
+	}
 
 }
