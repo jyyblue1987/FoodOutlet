@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.john.barcode.R;
-import com.example.john.barcode.activity.MainActivity;
+import com.example.john.barcode.dbmanager.ConnectionClass;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -20,7 +20,9 @@ public class LoginActivity extends AppCompatActivity {
         mTxtLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new ConnectionClass().CONN();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
+
                 finish();
             }
         });
