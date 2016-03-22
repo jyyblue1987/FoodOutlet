@@ -93,7 +93,7 @@ public class ConnectionClass {
 		}//end try
 		System.out.println("Goodbye!");
 
-		return true;
+		return loginOk;
 	}
 
 
