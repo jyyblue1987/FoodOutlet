@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.example.john.barcode.R;
 import com.example.john.barcode.dbmanager.ConnectionClass;
+import com.example.john.barcode.locale.LocaleFactory;
 import com.example.john.barcode.utils.BackgroundTaskUtils;
 import com.example.john.barcode.utils.ProgressUtils;
 
@@ -28,6 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         m_editUserName.setText("Admin");
         m_editPassword.setText("123");
 
+        LocaleFactory.selectLocale(0);
         TextView mTxtLogin = (TextView) findViewById(R.id.txtLogin);
 
         mTxtLogin.setOnClickListener(new View.OnClickListener() {

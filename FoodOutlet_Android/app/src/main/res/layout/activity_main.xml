@@ -70,7 +70,7 @@
 
 
         <FrameLayout
-            android:id="@id/layout_contain"
+            android:id="@+id/layout_contain"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"></FrameLayout>

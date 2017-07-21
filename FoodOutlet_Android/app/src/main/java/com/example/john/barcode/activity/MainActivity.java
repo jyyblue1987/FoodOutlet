@@ -9,15 +9,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.john.barcode.R;
-import com.example.john.barcode.dbmanager.ConnectionClass;
+import com.example.john.barcode.dbmanager.DataManager;
 import com.example.john.barcode.fragment.AcountFrag;
 import com.example.john.barcode.fragment.OrdersFrag;
 import com.example.john.barcode.fragment.SettingFrag;
 import com.example.john.barcode.fragment.ShoppingFrag;
 import com.example.john.barcode.lib.FragmentTab;
 import com.example.john.barcode.lib.TabItemImpl;
+import com.example.john.barcode.locale.LocaleFactory;
 import com.example.john.barcode.utils.BackgroundTaskUtils;
+import com.example.john.barcode.utils.ProgressUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -88,26 +91,36 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private void initData()
     {
         getCategories();
+        getItemList();
     }
 
 
 
     private void getCategories()
     {
-        final ProgressDialog progress = ProgressDialog.show(this, "Loading", "Please wait");
-        new BackgroundTaskUtils(new BackgroundTaskUtils.OnTaskProgress() {
-            List<JSONObject> list = new ArrayList<JSONObject>();
-            @Override
-            public void onProgress() {
-                list = ConnectionClass.fetchCategories();
-            }
+        List<JSONObject> list = new ArrayList<JSONObject>();
 
-            @Override
-            public void onFinished() {
-                progress.hide();
-                showCategories(list);
+        String [] category_english = {
+            "Other",  "Rice Oil Canned", "Seasoning", "Kitchenware", "Produce", "Meat", "Frozen Product", "Mushroom & Dried Seafood"
+        };
+
+        String [] category_chinese = {
+                "雜貨",  "糧油罐頭", "調味", "用品", "蔬菜", "肉類", "冷凍", "冬菇海味"
+        };
+
+
+        for(int i = 0; i < category_english.length; i++ )
+        {
+            JSONObject data = new JSONObject();
+            try {
+                data.put("en", category_english[i]);
+                data.put("ch", category_chinese[i]);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }).execute();
+            list.add(data);
+        }
+        showCategories(list);
     }
 
     private void showCategories(List<JSONObject> list)
@@ -132,8 +145,27 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             return;
 
         int id = categoryInfo.optInt("ID", 0);
-        mTitle.setText(categoryInfo.optString("CategoryName"));
+        if(LocaleFactory.getLanguage() == 0 )
+            mTitle.setText(categoryInfo.optString("en"));
+        else
+            mTitle.setText(categoryInfo.optString("ch"));
+    }
 
+    private void getItemList()
+    {
+        final ProgressDialog progress = ProgressUtils.showProgress(this, "Loading", "Please wait");
+        new BackgroundTaskUtils(new BackgroundTaskUtils.OnTaskProgress() {
+            @Override
+            public void onProgress() {
+                DataManager.getItemList();
+            }
+
+            @Override
+            public void onFinished() {
+                progress.hide();
+                showItemList();
+            }
+        }).execute();
     }
 
     private  void initEvents()
@@ -144,7 +176,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if( m_categories.size() < 1 )
                     return;
 
-                m_nSelectedCategory = (m_nSelectedCategory - 1) % m_categories.size();
+                m_nSelectedCategory = (m_nSelectedCategory + 1) % m_categories.size();
                 showItems(m_nSelectedCategory);
             }
         });
@@ -152,12 +184,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mRightArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( m_categories.size() < 1 )
+                if (m_categories.size() < 1)
                     return;
 
-                m_nSelectedCategory = (m_nSelectedCategory + 1) % m_categories.size();
+                m_nSelectedCategory = (m_nSelectedCategory + m_categories.size() - 1) % m_categories.size();
                 showItems(m_nSelectedCategory);
             }
         });
+    }
+
+    private void showItemList()
+    {
+
     }
 }

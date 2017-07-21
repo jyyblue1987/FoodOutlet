@@ -116,6 +116,23 @@ public class ConnectionClass {
 		return runQuery("SELECT [ID], [Unit] FROM [dbo].[Unit]");
 	}
 
+	public static List<JSONObject> fetchItems()
+	{
+		List<JSONObject> list = new ArrayList<JSONObject>();
+		for( int i = 0; i < 100; i++ )
+		{
+			list = runQuery("SELECT [PartNo], [ItemName], [ItemNameOtherLang], [UnitID], [PackingID], [PackingQty], [ProductID], [SubProductID], 'P' AS Unit, [Price6] AS UnitPrice, [ID] FROM dbo.Item WHERE OutcomeCode1='P' ORDER BY PartNo");
+			if( list != null && list.size() > 0 )
+				break;
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
+
 	public static List<JSONObject> runQuery(String sql)
 	{
 		List<JSONObject> list = new ArrayList<JSONObject>();
